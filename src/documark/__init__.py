@@ -1,3 +1,3 @@
 
-from .introspection import reference, delete_pages_attributes
+from .introspection import reference, delete_documark_attributes
 
