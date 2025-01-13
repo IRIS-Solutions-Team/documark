@@ -60,8 +60,10 @@ def _extract_tagline(callable_obj, ) -> str:
 
 
 _HEADING_SYMBOL = "&#9744;"
+_NONBREAKING_SPACE = "&#160;"
+#
 def _add_heading(docstring: str, call_name: str, call_name_is_code: bool, ) -> str:
-    heading_text = f"{_HEADING_SYMBOL}&nbsp;`{call_name}`" if call_name_is_code else call_name
+    heading_text = f"{_HEADING_SYMBOL}{_NONBREAKING_SPACE}`{call_name}`" if call_name_is_code else call_name
     heading_decor = "\n" + "-"*len(heading_text) + "--\n"
     docstring = _remove_visual_dividers(docstring, )
     docstring = "\n" + heading_text + heading_decor + docstring
@@ -77,8 +79,7 @@ _PRIORITY = {
 
 _DIVIDER_PATTERN = re.compile(r"\n·{20,}\n", )
 _DIVIDER_PATTERN_LEGACY = re.compile(r"\n\.{20,}\n", )
-
-
+#
 def _remove_visual_dividers(docstring: str, ) -> str:
     docstring = _DIVIDER_PATTERN.sub("", docstring)
     docstring = _DIVIDER_PATTERN_LEGACY.sub("", docstring)
