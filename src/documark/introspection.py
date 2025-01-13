@@ -59,7 +59,7 @@ def _extract_tagline(callable_obj, ) -> str:
     return m.group(1, ) if m else ""
 
 
-_HEADING_SYMBOL = "☐"
+_HEADING_SYMBOL = "&#9744;"
 def _add_heading(docstring: str, call_name: str, call_name_is_code: bool, ) -> str:
     heading_text = f"{_HEADING_SYMBOL} `{call_name}`" if call_name_is_code else call_name
     heading_decor = "\n" + "-"*len(heading_text) + "--\n"
