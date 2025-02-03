@@ -20,7 +20,7 @@ _TAGLINE_PATTERN = re.compile(r"==(.*?)==", )
 
 
 def reference(**kwargs, ) -> Callable:
-    def _decorate(callable_obj, ) -> Callable:
+    def _decorate(callable_obj: Callable, ) -> Callable:
         callable_obj._documark_reference = True
         for k, v in kwargs.items():
             setattr(callable_obj, f"_documark_{k}", v)
@@ -41,9 +41,12 @@ def reference(**kwargs, ) -> Callable:
                 callable_obj._documark_call_name_is_code,
             )
         callable_obj._documark_tagline = _extract_tagline(callable_obj, )
-
         return callable_obj
     return _decorate
+
+
+def no_reference(callable_obj: Callable, ) -> Callable:
+    callable_obj._documark_reference = False
 
 
 def delete_documark_attributes(callable_obj, ) -> None:
