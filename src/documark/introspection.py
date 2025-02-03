@@ -47,6 +47,7 @@ def reference(**kwargs, ) -> Callable:
 
 def no_reference(callable_obj: Callable, ) -> Callable:
     callable_obj._documark_reference = False
+    return callable_obj
 
 
 def delete_documark_attributes(callable_obj, ) -> None:
