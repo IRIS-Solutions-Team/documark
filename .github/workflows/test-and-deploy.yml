@@ -1,4 +1,4 @@
-name: Test and deploy
+name: Test and deploy to PYPI
 
 on:
   workflow_dispatch:
@@ -12,21 +12,22 @@ jobs:
         with:
           fetch-depth: 0
           ref: develop
-          path: ./documark-package
+          path: documark-package
           token: ${{ secrets.WORKFLOW_TOKEN }}
 
       - name: Set up identity
+        working-directory: documark-package
         run: |
-          cd $GITHUB_WORKSPACE/documark-package
-          git config --local user.email "jaromir.benes@gmail.com"
-          git config --local user.name "Jaromir Benes"
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
 
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: "3.13"
 
       - name: Install dependencies for tests
         run: |
+          pip install --upgrade pip
           pip install -e ./documark-package
           pip install pytest toml
 
@@ -54,25 +55,25 @@ jobs:
           RELEASE_TYPE=$(< ./.release_type)
           NEW_VERSION=$(python ./.github/workflows/bump_version.py \
             --release_type=$RELEASE_TYPE \
-            --source_path=./pyproject.toml \
-            --target_path=./pyproject.toml \
           )
           echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
 
       - name: Commit and push test results and new version to develop
         if: ${{ success() }}
+        env:
+            NEW_VERSION: ${{ env.NEW_VERSION }}
+        working-directory: documark-package
         run: |
-          cd $GITHUB_WORKSPACE/documark-package
-          NEW_VERSION=${{ env.NEW_VERSION }}
           git add ./pyproject.toml ./tests/report.txt
           git commit -m "Update test results and bump version number to $NEW_VERSION"
           git push origin develop
 
       - name: Merge to master, tag and push
         if: ${{ success() }}
+        env:
+            NEW_VERSION: ${{ env.NEW_VERSION }}
+        working-directory: documark-package
         run: |
-          cd $GITHUB_WORKSPACE/documark-package
-          NEW_VERSION=${{ env.NEW_VERSION }}
           git branch
           git switch master
           git pull origin master
@@ -84,8 +85,8 @@ jobs:
 
       - name: Remove .release_type from develop
         if: ${{ success() }}
+        working-directory: documark-package
         run: |
-          cd $GITHUB_WORKSPACE/documark-package
           git switch develop
           git rm .release_type
           git commit -m "Remove .release_type after release"
@@ -98,17 +99,20 @@ jobs:
           python -m pip install --upgrade twine
 
       - name: Build dist files
+        env:
+            NEW_VERSION: ${{ env.NEW_VERSION }}
+        working-directory: documark-package
         run: |
-          cd $GITHUB_WORKSPACE/documark-package
-          NEW_VERSION=${{ env.NEW_VERSION }}
           git switch master
-          echo "Building version ${{ env.NEW_VERSION }}"
+          echo "Building version $NEW_VERSION"
           python -m build
 
       - name: Upload to PYPI
+        working-directory: documark-package
+        env:
+            PYPI_API_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
         run: |
-          cd $GITHUB_WORKSPACE/documark-package
-          python -m twine upload dist/* -r pypi -u __token__ -p ${{ secrets.PYPI_API_TOKEN }} --verbose
+          python -m twine upload dist/* -r pypi -u __token__ -p $PYPI_API_TOKEN --verbose
 
       - name: Upload new dist as artifact
         uses: actions/upload-artifact@master

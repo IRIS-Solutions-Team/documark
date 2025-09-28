@@ -53,9 +53,9 @@ def no_reference(callable_obj: Callable, ) -> Callable:
 def delete_documark_attributes(callable_obj, ) -> None:
     """
     """
-    for attr in dir(callable_obj):
-        if attr.startswith("_documark_"):
-            delattr(callable_obj, attr)
+    for attr in dir(callable_obj, ):
+        if attr.startswith("_documark_", ):
+            delattr(callable_obj, attr, )
 
 
 def _extract_tagline(callable_obj, ) -> str:
