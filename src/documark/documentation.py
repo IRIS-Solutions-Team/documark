@@ -2,7 +2,6 @@
 import os
 import re
 import operator as _op
-from loguru import logger
 from types import MethodType
 from collections.abc import Iterable
 
@@ -15,7 +14,7 @@ def document_namespaces(
     """
     #[
     for n in namespaces:
-        logger.info(f"Documenting {n.__name__}", )
+        print(f"Documenting {n.__name__}", )
         document_namespace(n, docs_root, )
     #]
 
