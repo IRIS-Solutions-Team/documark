@@ -7,13 +7,13 @@ jobs:
   Test_and_deploy:
      runs-on: ubuntu-latest
      steps:
-      - name: Checkout master
+      - name: Checkout documark/develop branch
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: develop
           path: documark-package
-          token: ${{ secrets.WORKFLOW_TOKEN }}
+          token: ${{ secrets.IRISPIE_ACTIONS_TOKEN_2025 }}
 
       - name: Set up identity
         working-directory: documark-package
@@ -32,8 +32,8 @@ jobs:
           pip install pytest toml
 
       - name: Run tests
+        working-directory: documark-package
         run: |
-          cd $GITHUB_WORKSPACE/documark-package
           date > ./tests/report.txt
           # echo "==================================================" >> ./tests/report.txt
           # pytest ./tests -ra >> ./tests/report.txt
