@@ -46,13 +46,14 @@ jobs:
 
       - name: Bump version in pyproject.toml
         if: ${{ success() }}
+        working-directory: documark-package
         run: |
-          cd $GITHUB_WORKSPACE/documark-package
           if ! [[ -e ./.release_type ]]; then
             echo "Cannot release without .release_type"
             exit 1
           fi
           RELEASE_TYPE=$(< ./.release_type)
+          echo $RELEASE_TYPE
           NEW_VERSION=$(python ./.github/workflows/bump_version.py \
             --release_type=$RELEASE_TYPE \
           )
