@@ -53,9 +53,8 @@ jobs:
             exit 1
           fi
           RELEASE_TYPE=$(< ./.release_type)
-          echo $RELEASE_TYPE
           NEW_VERSION=$(python ./.github/workflows/bump_version.py \
-            --release_type=$RELEASE_TYPE \
+            --release-type=$RELEASE_TYPE \
           )
           echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
 
