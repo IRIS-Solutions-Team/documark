@@ -74,13 +74,14 @@ jobs:
             NEW_VERSION: ${{ env.NEW_VERSION }}
         working-directory: documark-package
         run: |
-          git branch
           git switch master
           git pull origin master
           git merge -X theirs -m "Release documark-package $NEW_VERSION" develop
           git ls-tree master
+          echo "Tagging version $NEW_VERSION"
           git tag $NEW_VERSION
           git push origin master --tags
+          git tag
           git switch develop
 
       - name: Remove .release_type from develop
