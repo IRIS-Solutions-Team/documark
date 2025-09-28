@@ -53,9 +53,8 @@ jobs:
             exit 1
           fi
           RELEASE_TYPE=$(< ./.release_type)
-          NEW_VERSION=$(python ./.github/workflows/bump_version.py \
-            --release-type=$RELEASE_TYPE \
-          )
+          python ./.github/workflows/bump_version.py --release-type=$RELEASE_TYPE
+          NEW_VERSION=$(python ./.github/workflows/print_version.py)
           echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
 
       - name: Commit and push test results and new version to develop
